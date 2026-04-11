@@ -65,8 +65,8 @@ jobs:
           jacoco-csv-file: target/site/jacoco/jacoco.csv
           badges-directory: badges
           generate-branches-badge: true
-          # A mágica está aqui: gera um JSON para o Shields.io ler
           generate-coverage-endpoint: true
+          coverage-label: "COVERAGE"
 
       - name: 📤 Commit do badge e endpoint
         uses: EndBug/add-and-commit@v9

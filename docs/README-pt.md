@@ -1,4 +1,11 @@
 # RaceControlHQ API
+
+<p align="right">
+  <code><a href="../README.md">Início</a></code> / 
+  <code><a href="README-pt.md">Português</a></code> / 
+  <code><a href="README-en.md">English</a></code>
+</p>
+
 **Documentação Funcional da API**
 
 **Versão:** 1.0  

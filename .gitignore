@@ -5,6 +5,7 @@ bin/
 out/
 DOCS.md
 docs/rascunho.README-pt.md
+src/main/java/com/racecontrol/api/Principal.java
 
 # --- MAVEN ---
 .mvn/wrapper/maven-wrapper.jar

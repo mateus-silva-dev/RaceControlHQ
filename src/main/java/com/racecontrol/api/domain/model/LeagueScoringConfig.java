@@ -1,4 +1,4 @@
-package com.racecontrol.api.league;
+package com.racecontrol.api.domain.model;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -13,7 +13,7 @@ import java.util.UUID;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EqualsAndHashCode(of = "id")
-public final class ScoringConfig {
+public final class LeagueScoringConfig {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

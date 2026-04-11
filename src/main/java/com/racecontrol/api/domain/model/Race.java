@@ -1,7 +1,7 @@
-package com.racecontrol.api.race;
+package com.racecontrol.api.domain.model;
 
 import com.racecontrol.api.core.exception.BusinessRuleException;
-import com.racecontrol.api.season.Season;
+import com.racecontrol.api.domain.model.enums.CarCategory;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;

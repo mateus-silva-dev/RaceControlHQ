@@ -1,7 +1,7 @@
-package com.racecontrol.api.season;
+package com.racecontrol.api.domain.model;
 
 import com.racecontrol.api.core.exception.BusinessRuleException;
-import com.racecontrol.api.league.League;
+import com.racecontrol.api.domain.model.enums.SeasonStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;

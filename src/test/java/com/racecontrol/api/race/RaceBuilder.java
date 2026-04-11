@@ -1,6 +1,8 @@
 package com.racecontrol.api.race;
 
-import com.racecontrol.api.season.Season;
+import com.racecontrol.api.domain.model.Race;
+import com.racecontrol.api.domain.model.Season;
+import com.racecontrol.api.domain.model.enums.CarCategory;
 import com.racecontrol.api.season.SeasonBuilder;
 
 import java.time.LocalDateTime;

@@ -1,4 +1,4 @@
-package com.racecontrol.api.race;
+package com.racecontrol.api.domain.model.enums;
 
 import lombok.Getter;
 

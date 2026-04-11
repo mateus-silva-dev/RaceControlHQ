@@ -1,6 +1,8 @@
 package com.racecontrol.api.season;
 
 import com.racecontrol.api.helpers.DomainAssertions;
+import com.racecontrol.api.domain.model.Season;
+import com.racecontrol.api.domain.model.enums.SeasonStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -51,7 +53,7 @@ public class SeasonTest implements DomainAssertions {
 
         @ParameterizedTest
         @CsvSource(value = {
-            "NULL, 'Season title cannot be null.'",
+            "NULL, 'Season title cannot be empty.'",
             "'', 'Season title cannot be empty.'",
             "S2, 'Season title must be at least 3 characters long.'"
         }, nullValues = {"NULL"})
@@ -87,7 +89,7 @@ public class SeasonTest implements DomainAssertions {
         void shouldThrowWhenCreationWithInvalidLeague() {
             assertThatBusinessException(
                     () -> SeasonBuilder.season().withLeague(null).build(),
-                    "League is mandatory for a season."
+                    "League is mandatory."
             );
         }
     }

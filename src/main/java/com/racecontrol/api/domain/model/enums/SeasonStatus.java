@@ -1,4 +1,4 @@
-package com.racecontrol.api.season;
+package com.racecontrol.api.domain.model.enums;
 
 import com.racecontrol.api.core.exception.BusinessRuleException;
 

@@ -6,7 +6,9 @@ import com.racecontrol.api.core.exception.BusinessRuleException;
 public class UrlValidation {
 
     public static String validateUrl(String value, String field) {
-        CommonValidation.validateNotBlank(value, field);
+        if (value == null || value.isBlank()) {
+            throw new BusinessRuleException(field + " cannot be empty.", Code.EMPTY_FIELD);
+        }
 
         String normalized = normalize(value);
 

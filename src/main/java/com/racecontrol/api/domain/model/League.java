@@ -2,7 +2,7 @@ package com.racecontrol.api.domain.model;
 
 import com.racecontrol.api.core.exception.BusinessRuleException;
 import com.racecontrol.api.domain.util.Slugifier;
-import com.racecontrol.api.domain.validation.TextValidation;
+import com.racecontrol.api.domain.validation.CommonValidation;
 import com.racecontrol.api.domain.validation.UrlValidation;
 import jakarta.persistence.*;
 import lombok.*;
@@ -48,8 +48,8 @@ public class League extends BaseEntity {
     private LocalDateTime createdAt;
 
     public League(String name, String description) {
-        this.name = TextValidation.validate(name, "Name", 5);
-        this.description = TextValidation.validate(description, "Description", 10);
+        this.name = CommonValidation.requiredText(name, "Name", 5);
+        this.description = CommonValidation.requiredText(description, "Description", 10);
         this.slug = Slugifier.generate(this.name);
     }
 
@@ -59,7 +59,7 @@ public class League extends BaseEntity {
 
 
     public void updateName(String newName) {
-        String name = TextValidation.validate(newName, "Name", 5);
+        String name = CommonValidation.requiredText(newName, "Name", 5);
         updateField(name, this.name, value -> {
             this.name = value;
             this.slug = Slugifier.generate(value);
@@ -67,7 +67,7 @@ public class League extends BaseEntity {
     }
 
     public void updateDescription(String newDescription) {
-        String description = TextValidation.validate(newDescription, "Description", 10);
+        String description = CommonValidation.requiredText(newDescription, "Description", 10);
         updateField(description, this.description, value -> {
             this.description = value;
         });

@@ -2,6 +2,7 @@ package com.racecontrol.api.domain.model;
 
 import com.racecontrol.api.core.exception.BusinessRuleException;
 import com.racecontrol.api.domain.model.enums.SeasonStatus;
+import com.racecontrol.api.domain.validation.CommonValidation;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -18,8 +19,8 @@ import java.util.UUID;
 @Table(name = "season")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@EqualsAndHashCode(of = "id")
-public class Season {
+@EqualsAndHashCode(callSuper = false, of = "id")
+public class Season extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -41,11 +42,9 @@ public class Season {
     private League league;
 
     public Season(String title, LocalDate startDate, LocalDate endDate, League league, Clock clock) {
-        if (league == null) {
-            throw new BusinessRuleException("League is mandatory for a season.");
-        }
+        CommonValidation.required(league, "League");
 
-        this.title = validateTitle(title);
+        this.title = CommonValidation.requiredText(title, "Season title", 3);
         validateDates(startDate, endDate, clock);
         this.startDate = startDate;
         this.endDate = endDate;
@@ -59,9 +58,10 @@ public class Season {
 
 
     public void updateTitle(String newTitle) {
-        String title = validateTitle(newTitle);
-        if (isUnchanged(title, this.title)) return;
-        this.title = title;
+        String title = CommonValidation.requiredText(newTitle, "Season title", 3);
+        updateField(title, this.title, value -> {
+            this.title = value;
+        });
     }
 
     public void updateDates(LocalDate newStartDate, LocalDate newEndDate, Clock clock) {
@@ -74,24 +74,10 @@ public class Season {
     }
 
     public void updateStatus(SeasonStatus newStatus) {
-        if (isUnchanged(newStatus, this.status)) return;
-        this.status.validateTransition(newStatus);
-        this.status = newStatus;
-    }
-
-
-    private String validateTitle(String title) {
-        if (title == null) {
-            throw new BusinessRuleException("Season title cannot be null.");
-        }
-        String value = title.trim().replaceAll("\\s+", " ");
-        if (value.isEmpty()) {
-            throw new BusinessRuleException("Season title cannot be empty.");
-        }
-        if (value.trim().length() < 3) {
-            throw new BusinessRuleException("Season title must be at least 3 characters long.");
-        }
-        return value;
+        updateField(newStatus, this.status, value -> {
+            this.status.validateTransition(value);
+            this.status = value;
+        });
     }
 
     private void validateDates(LocalDate start, LocalDate end, Clock clock) {
@@ -110,10 +96,6 @@ public class Season {
         if (end.isEqual(start)) {
             throw new BusinessRuleException("The season must last at least one day.");
         }
-    }
-
-    private <T> boolean isUnchanged(T newValue, T currentValue) {
-        return Objects.equals(newValue, currentValue);
     }
 
 }

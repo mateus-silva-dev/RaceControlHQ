@@ -111,16 +111,18 @@ class LeagueTest implements DomainAssertions {
         }
 
         @ParameterizedTest
-        @CsvSource({
+        @CsvSource(value = {
                 "NAME, '', 'Name cannot be empty.'",
                 "NAME, 'GT7', 'Name must be at least 5 characters long.'",
                 "DESC, '', 'Description cannot be empty.'",
                 "DESC, 'Short', 'Description must be at least 10 characters long.'",
+                "LOGO, NULL, 'LogoUrl cannot be empty.'",
                 "LOGO, 'invalid', 'The URL for LogoUrl is invalid.'",
                 "LOGO, '', 'LogoUrl cannot be empty.'",
+                "PDF, NULL, 'RulesPDFUrl cannot be empty.'",
                 "PDF, 'invalid', 'The URL for RulesPDFUrl is invalid.'",
                 "PDF, '', 'RulesPDFUrl cannot be empty.'"
-        })
+        }, nullValues = {"NULL"})
         @DisplayName("Should validate all fields on update")
         void shouldValidateFieldsOnUpdate(String field, String value, String message) {
             assertThatBusinessException(() -> {

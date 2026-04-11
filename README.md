@@ -23,7 +23,7 @@
 
 <p align="center">
   <a href="https://github.com/mateus-silva-dev/RaceControlHQ/actions">
-    <img src="https://github.com/mateus-silva-dev/RaceControlHQ/actions/workflows/ci.yml/badge.svg?branch=main" />
+    <img src="https://github.com/mateus-silva-dev/RaceControlHQ/github/workflows/ci.yml/badge.svg?branch=main" />
   </a>
 
   <a href="https://mateus-silva-dev.github.io/RaceControlHQ/" target="_blank">

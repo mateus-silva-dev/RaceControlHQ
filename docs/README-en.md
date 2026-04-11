@@ -1,4 +1,4 @@
-<h1 height="30" align="center">🏎️ RaceControlHQ API</h1>
+<h1 height="30" align="center">🏎️ RaceControlHQ API </h1>
 
 <p align="right">
   <code><a href="../README.md">Home</a></code> / 

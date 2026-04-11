@@ -57,6 +57,24 @@ jobs:
           name: coverage-report
           path: target/site/jacoco/
 
+      - name: 📊 Gerar badge de cobertura
+        uses: cicirello/jacoco-badge-generator@v2
+        with:
+          jacoco-csv-file: target/site/jacoco/jacoco.csv
+          badges-directory: badges
+
+      - name: 📤 Commit do badge
+        uses: EndBug/add-and-commit@v9
+        with:
+          message: "update coverage badge"
+          add: "badges/*"
+
+      - name: 📂 Publicar cobertura no Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: target/site/jacoco
+
   build-docker:
     name: 🐳 Build Docker Image
     runs-on: ubuntu-latest

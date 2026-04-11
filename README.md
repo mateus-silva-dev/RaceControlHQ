@@ -23,11 +23,11 @@
 
 <p align="center">
   <a href="https://github.com/mateus-silva-dev/RaceControlHQ/actions">
-    <img src="https://img.shields.io/badge/CI-passing-brightgreen?style=for-the-badge&logo=github&logoColor=white" />
+    <img src="https://github.com/mateus-silva-dev/RaceControlHQ/actions/workflows/ci.yml/badge.svg?style=for-the-badge" />
   </a>
 
-  <a href="https://mateus-silva-dev.github.io/RaceControlHQ/jacoco/">
-    <img src="https://img.shields.io/badge/coverage-85%25-brightgreen?style=for-the-badge" />
+  <a href="https://mateus-silva-dev.github.io/RaceControlHQ/">
+    <img src="badges/jacoco.svg" />
   </a>
 </p>
 

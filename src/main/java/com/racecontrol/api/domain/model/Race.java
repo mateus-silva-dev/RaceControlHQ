@@ -2,6 +2,7 @@ package com.racecontrol.api.domain.model;
 
 import com.racecontrol.api.core.exception.BusinessRuleException;
 import com.racecontrol.api.domain.model.enums.CarCategory;
+import com.racecontrol.api.domain.validation.CommonValidation;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -10,15 +11,14 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Objects;
 import java.util.UUID;
 
 @Entity
 @Table(name = "race")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@EqualsAndHashCode(of = "id")
-public class Race {
+@EqualsAndHashCode(callSuper = false, of = "id")
+public class Race extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -44,99 +44,65 @@ public class Race {
     private Season season;
 
     public Race(String name, LocalDateTime raceDateTime, CarCategory carCategory, String circuit, Season season) {
-        if (circuit == null || circuit.isEmpty()) {
-            throw new BusinessRuleException("Circuit cannot be empty.");
-        }
-        if (carCategory == null) {
-            throw new BusinessRuleException("Car category is mandatory for a race.");
-        }
-        if (season == null) {
-            throw new BusinessRuleException("Season is mandatory for a race.");
-        }
-
-        this.name = validateName(name);
+        this.name = CommonValidation.requiredText(name, "Race name", 5);
+        this.raceDateTime = CommonValidation.required(raceDateTime, "Race date");
+        this.carCategory = CommonValidation.required(carCategory, "Car category");
+        this.circuit = CommonValidation.requiredText(circuit, "Circuit", 5);
+        this.season = CommonValidation.required(season, "Season");;
         validateRaceDate(raceDateTime, season);
-        this.raceDateTime = raceDateTime;
-        this.carCategory = carCategory;
-        this.circuit = circuit;
-        this.season = season;
     }
 
     public static Race create(String name, LocalDateTime raceDateTime, CarCategory carCategory, String circuit, Season season) {
         return new Race(name, raceDateTime, carCategory, circuit, season);
     }
 
+    public LocalDateTime getLobbyAnnouncementTime() {
+        return this.raceDateTime.minusMinutes(this.lobbyLeadTimeMinutes);
+    }
 
     public void updateName(String newName) {
-        String name = validateName(newName);
-        if (isUnchanged(name, this.name)) return;
-        this.name = name;
+        String name = CommonValidation.requiredText(newName, "Race", 5);
+        updateField(name, this.name, value -> {
+            this.name = value;
+        });
     }
 
     public void updateRaceDateTime(LocalDateTime newRaceDateTime) {
-        if (newRaceDateTime == null) {
-            throw new BusinessRuleException("Race date cannot be null.");
-        }
+        CommonValidation.required(newRaceDateTime, "Race date");
         validateRaceDate(newRaceDateTime, this.season);
-        if (isUnchanged(newRaceDateTime, this.raceDateTime)) return;
-        this.raceDateTime = newRaceDateTime;
-    }
-
-    public LocalDateTime getLobbyAnnouncementTime() {
-        return this.raceDateTime.minusMinutes(this.lobbyLeadTimeMinutes);
+        updateField(newRaceDateTime, this.raceDateTime, value -> {
+            this.raceDateTime = value;
+        });
     }
 
     public void updateLobbyLeadTime(Integer newLeadTime) {
         if (newLeadTime == null || newLeadTime < 0) {
             throw new BusinessRuleException("Lobby lead time cannot be negative.");
         }
-        if (isUnchanged(newLeadTime, this.lobbyLeadTimeMinutes)) return;
-        this.lobbyLeadTimeMinutes = newLeadTime;
+        updateField(newLeadTime, this.lobbyLeadTimeMinutes, value -> {
+            this.lobbyLeadTimeMinutes = value;
+        });
     }
 
     public void updateCarCategory(CarCategory newCarCategory) {
-        if (newCarCategory == null) {
-            throw new BusinessRuleException("Car category cannot be null.");
-        }
-        if (isUnchanged(newCarCategory, this.carCategory)) return;
-        this.carCategory = newCarCategory;
+        CommonValidation.required(newCarCategory, "Car category");
+        updateField(newCarCategory, this.carCategory, value -> {
+            this.carCategory = value;
+        });
     }
 
     public void updateCircuit(String newCircuit) {
-        if (newCircuit == null || newCircuit.trim().isEmpty()) {
-            throw new BusinessRuleException("Circuit cannot be empty.");
-        }
-        if (isUnchanged(newCircuit, this.circuit)) return;
-        this.circuit = newCircuit;
-    }
-
-
-    private String validateName(String name) {
-        if (name == null) {
-            throw new BusinessRuleException("Race name cannot be null.");
-        }
-        String value = name.trim().replaceAll("\\s+", " ");
-        if (value.isEmpty()) {
-            throw new BusinessRuleException("Race name cannot be empty.");
-        }
-        if (value.trim().length() < 5) {
-            throw new BusinessRuleException("Race name must be at least 5 characters long.");
-        }
-        return value;
+        CommonValidation.requiredText(newCircuit, "Circuit", 5);
+        updateField(newCircuit, this.circuit, value -> {
+            this.circuit = value;
+        });
     }
 
     private void validateRaceDate(LocalDateTime dateTime, Season season) {
-        if (dateTime == null) {
-            throw new BusinessRuleException("Race date cannot be null.");
-        }
         LocalDate raceDate = dateTime.toLocalDate();
         if (raceDate.isBefore(season.getStartDate()) || raceDate.isAfter(season.getEndDate())) {
             throw new BusinessRuleException("Race date is outside the season interval.");
         }
-    }
-
-    private <T> boolean isUnchanged(T newValue, T currentValue) {
-        return Objects.equals(newValue, currentValue);
     }
 
 }

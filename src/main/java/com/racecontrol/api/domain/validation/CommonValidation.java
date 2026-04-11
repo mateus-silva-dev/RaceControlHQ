@@ -5,10 +5,11 @@ import com.racecontrol.api.core.exception.BusinessRuleException;
 
 public class CommonValidation {
 
-    public static <T> void required(T value, String field) {
+    public static <T> T required(T value, String field) {
         if (value == null) {
             throw new BusinessRuleException(field + " is mandatory.", Code.EMPTY_FIELD);
         }
+        return value;
     }
 
     public static String requiredText(String value, String field, int minLength) {

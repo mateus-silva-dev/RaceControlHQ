@@ -42,14 +42,12 @@ public class Season extends BaseEntity {
     private League league;
 
     public Season(String title, LocalDate startDate, LocalDate endDate, League league, Clock clock) {
-        CommonValidation.required(league, "League");
-
         this.title = CommonValidation.requiredText(title, "Season title", 3);
         validateDates(startDate, endDate, clock);
         this.startDate = startDate;
         this.endDate = endDate;
         this.status = SeasonStatus.REGISTRATION_OPEN;
-        this.league = league;
+        this.league = CommonValidation.required(league, "League");
     }
 
     public static Season create(String title, LocalDate startDate, LocalDate endDate, League league, Clock clock) {

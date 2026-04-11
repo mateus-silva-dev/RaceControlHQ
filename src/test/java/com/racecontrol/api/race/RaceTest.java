@@ -43,11 +43,11 @@ public class RaceTest implements DomainAssertions {
 
         @ParameterizedTest
         @CsvSource(value = {
-                "NULL, GR3, 'Nürburgring', 'Race name cannot be null.'",
+                "NULL, GR3, 'Nürburgring', 'Race name cannot be empty.'",
                 "'', GR3, 'Nürburgring', 'Race name cannot be empty.'",
                 "'Nür', GR3, 'Nürburgring', 'Race name must be at least 5 characters long.'",
 
-                "'Nürburgring Grand-Prix', NULL, 'Nürburgring', 'Car category is mandatory for a race.'",
+                "'Nürburgring Grand-Prix', NULL, 'Nürburgring', 'Car category is mandatory.'",
 
                 "'Nürburgring Grand-Prix', GR3, NULL, 'Circuit cannot be empty.'",
                 "'Nürburgring Grand-Prix', GR3, '', 'Circuit cannot be empty.'"
@@ -71,13 +71,13 @@ public class RaceTest implements DomainAssertions {
                     () -> RaceBuilder.race()
                             .withSeason(null)
                             .build(),
-                    "Season is mandatory for a race."
+                    "Season is mandatory."
             );
         }
 
         @ParameterizedTest
         @CsvSource(value = {
-                "NULL, 'Race date cannot be null.'",
+                "NULL, 'Race date is mandatory.'",
                 "2025-05-25T19:00:00, 'Race date is outside the season interval.'",
                 "2027-09-05T19:00:00, 'Race date is outside the season interval.'"
         }, nullValues = {"NULL"})
@@ -193,14 +193,14 @@ public class RaceTest implements DomainAssertions {
 
         @ParameterizedTest
         @CsvSource(value = {
-                "NAME, '', 'Race name cannot be empty.'",
-                "NAME, 'Itl', 'Race name must be at least 5 characters long.'",
+                "NAME, '', 'Race cannot be empty.'",
+                "NAME, 'Itl', 'Race must be at least 5 characters long.'",
                 "CIRCUIT, NULL, 'Circuit cannot be empty.'",
                 "CIRCUIT, '', 'Circuit cannot be empty.'",
-                "CATEGORY, NULL, 'Car category cannot be null.'",
+                "CATEGORY, NULL, 'Car category is mandatory.'",
                 "LOBBYTIME, NULL, 'Lobby lead time cannot be negative.'",
                 "LOBBYTIME, -10, 'Lobby lead time cannot be negative.'",
-                "DATERACE, NULL, 'Race date cannot be null.'",
+                "DATERACE, NULL, 'Race date is mandatory.'",
                 "DATERACE, '2025-05-25T19:00:00', 'Race date is outside the season interval.'",
                 "DATERACE, '2027-09-05T19:00:00', 'Race date is outside the season interval.'",
         }, nullValues = {"NULL"})

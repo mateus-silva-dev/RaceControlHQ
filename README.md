@@ -27,8 +27,8 @@
   </a>
 
   <a href="https://mateus-silva-dev.github.io/RaceControlHQ/" target="_blank">
-    <img src="https://img.shields.io/badge/dynamic/json?color=brightgreen&label=COVERAGE&query=%24.message&url=https%3A%2F%2Fraw.githubusercontent.com%2Fmateus-silva-dev%2FRaceControlHQ%2Fmain%2Fbadges%2Fjacoco.json&style=for-the-badge&logo=target" alt="Coverage" />
-  </a>
+    <img src="https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fmateus-silva-dev%2FRaceControlHQ%2Fmain%2Fbadges%2Fjacoco.json&style=for-the-badge&logo=target&label=COVERAGE" alt="Coverage" />
+    </a>
 </p>
 
 <div align="center">

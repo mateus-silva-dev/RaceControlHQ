@@ -110,6 +110,14 @@ class LeagueTest implements DomainAssertions {
             }
         }
 
+        @Test
+        @DisplayName("Should pass validation when URL is valid")
+        void shouldPassWhenUrlIsValid() {
+            String validUrl = "https://racecontrol.com/logo.png";
+            league.updateLogoUrl(validUrl);
+            assertEquals(validUrl, league.getLogoUrl());
+        }
+
         @ParameterizedTest
         @CsvSource(value = {
                 "NAME, '', 'Name cannot be empty.'",
@@ -119,6 +127,9 @@ class LeagueTest implements DomainAssertions {
                 "LOGO, NULL, 'LogoUrl cannot be empty.'",
                 "LOGO, 'invalid', 'The URL for LogoUrl is invalid.'",
                 "LOGO, '', 'LogoUrl cannot be empty.'",
+                "LOGO, 'espaço no meio.com', 'The URL for LogoUrl is invalid.'",
+                "LOGO, 'http://^invalid^.com', 'The URL for LogoUrl is invalid.'",
+                "LOGO, ':::::', 'The URL for LogoUrl is invalid.'",
                 "PDF, NULL, 'RulesPDFUrl cannot be empty.'",
                 "PDF, 'invalid', 'The URL for RulesPDFUrl is invalid.'",
                 "PDF, '', 'RulesPDFUrl cannot be empty.'"

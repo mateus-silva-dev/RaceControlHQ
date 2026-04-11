@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Season.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">RaceControl HQ</a> &gt; <a href="index.source.html" class="el_package">com.racecontrol.api.domain.model</a> &gt; <span class="el_source">Season.java</span></div><h1>Season.java</h1><pre class="source lang-java linenums">package com.racecontrol.api.domain.model;
+
+import com.racecontrol.api.core.exception.BusinessRuleException;
+import com.racecontrol.api.domain.model.enums.SeasonStatus;
+import com.racecontrol.api.domain.validation.CommonValidation;
+import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import java.time.Clock;
+import java.time.LocalDate;
+import java.util.Objects;
+import java.util.UUID;
+
+
+@Entity
+@Table(name = &quot;season&quot;)
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@EqualsAndHashCode(callSuper = false, of = &quot;id&quot;)
+public class Season extends BaseEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
+
+    @Column(nullable = false, length = 100)
+    private String title;
+
+    @Column(nullable = false)
+    private LocalDate startDate;
+
+    @Column(nullable = false)
+    private LocalDate endDate;
+
+    @Enumerated(EnumType.STRING)
+    private SeasonStatus status;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private League league;
+
+<span class="fc" id="L44">    public Season(String title, LocalDate startDate, LocalDate endDate, League league, Clock clock) {</span>
+<span class="fc" id="L45">        this.title = CommonValidation.requiredText(title, &quot;Season title&quot;, 3);</span>
+<span class="fc" id="L46">        validateDates(startDate, endDate, clock);</span>
+<span class="fc" id="L47">        this.startDate = startDate;</span>
+<span class="fc" id="L48">        this.endDate = endDate;</span>
+<span class="fc" id="L49">        this.status = SeasonStatus.REGISTRATION_OPEN;</span>
+<span class="fc" id="L50">        this.league = CommonValidation.required(league, &quot;League&quot;);</span>
+<span class="fc" id="L51">    }</span>
+
+    public static Season create(String title, LocalDate startDate, LocalDate endDate, League league, Clock clock) {
+<span class="fc" id="L54">        return new Season(title, startDate, endDate, league, clock);</span>
+    }
+
+
+    public void updateTitle(String newTitle) {
+<span class="fc" id="L59">        String title = CommonValidation.requiredText(newTitle, &quot;Season title&quot;, 3);</span>
+<span class="fc" id="L60">        updateField(title, this.title, value -&gt; {</span>
+<span class="fc" id="L61">            this.title = value;</span>
+<span class="fc" id="L62">        });</span>
+<span class="fc" id="L63">    }</span>
+
+    public void updateDates(LocalDate newStartDate, LocalDate newEndDate, Clock clock) {
+<span class="fc" id="L66">        validateDates(newStartDate, newEndDate, clock);</span>
+<span class="fc bfc" id="L67" title="All 4 branches covered.">        if (isUnchanged(newStartDate, this.startDate) &amp;&amp; isUnchanged(newEndDate, this.endDate)) {</span>
+<span class="fc" id="L68">            return;</span>
+        }
+<span class="fc" id="L70">        this.startDate = newStartDate;</span>
+<span class="fc" id="L71">        this.endDate = newEndDate;</span>
+<span class="fc" id="L72">    }</span>
+
+    public void updateStatus(SeasonStatus newStatus) {
+<span class="fc" id="L75">        updateField(newStatus, this.status, value -&gt; {</span>
+<span class="fc" id="L76">            this.status.validateTransition(value);</span>
+<span class="fc" id="L77">            this.status = value;</span>
+<span class="fc" id="L78">        });</span>
+<span class="fc" id="L79">    }</span>
+
+    private void validateDates(LocalDate start, LocalDate end, Clock clock) {
+<span class="fc bfc" id="L82" title="All 4 branches covered.">        if (start == null || end == null) {</span>
+<span class="fc" id="L83">            throw new BusinessRuleException(&quot;Dates cannot be null.&quot;);</span>
+        }
+
+<span class="fc" id="L86">        LocalDate today = LocalDate.now(clock);</span>
+
+<span class="fc bfc" id="L88" title="All 2 branches covered.">        if(start.isBefore(today)) {</span>
+<span class="fc" id="L89">            throw new BusinessRuleException(&quot;The start date cannot be in the past.&quot;);</span>
+        }
+<span class="fc bfc" id="L91" title="All 2 branches covered.">        if (end.isBefore(start)) {</span>
+<span class="fc" id="L92">            throw new BusinessRuleException(&quot;The end date cannot be before start date.&quot;);</span>
+        }
+<span class="fc bfc" id="L94" title="All 2 branches covered.">        if (end.isEqual(start)) {</span>
+<span class="fc" id="L95">            throw new BusinessRuleException(&quot;The season must last at least one day.&quot;);</span>
+        }
+<span class="fc" id="L97">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

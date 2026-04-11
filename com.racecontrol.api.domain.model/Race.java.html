@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Race.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">RaceControl HQ</a> &gt; <a href="index.source.html" class="el_package">com.racecontrol.api.domain.model</a> &gt; <span class="el_source">Race.java</span></div><h1>Race.java</h1><pre class="source lang-java linenums">package com.racecontrol.api.domain.model;
+
+import com.racecontrol.api.core.exception.BusinessRuleException;
+import com.racecontrol.api.domain.model.enums.CarCategory;
+import com.racecontrol.api.domain.validation.CommonValidation;
+import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+@Entity
+@Table(name = &quot;race&quot;)
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@EqualsAndHashCode(callSuper = false, of = &quot;id&quot;)
+public class Race extends BaseEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
+
+    @Column(nullable = false, length = 100)
+    private String name;
+
+    @Column(nullable = false)
+    private LocalDateTime raceDateTime;
+
+<span class="fc" id="L33">    @Column(nullable = false)</span>
+<span class="fc" id="L34">    private Integer lobbyLeadTimeMinutes = 15;</span>
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private CarCategory carCategory;
+
+    @Column(nullable = false)
+    private String circuit;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Season season;
+
+<span class="fc" id="L46">    public Race(String name, LocalDateTime raceDateTime, CarCategory carCategory, String circuit, Season season) {</span>
+<span class="fc" id="L47">        this.name = CommonValidation.requiredText(name, &quot;Race name&quot;, 5);</span>
+<span class="fc" id="L48">        this.raceDateTime = CommonValidation.required(raceDateTime, &quot;Race date&quot;);</span>
+<span class="fc" id="L49">        this.carCategory = CommonValidation.required(carCategory, &quot;Car category&quot;);</span>
+<span class="fc" id="L50">        this.circuit = CommonValidation.requiredText(circuit, &quot;Circuit&quot;, 5);</span>
+<span class="fc" id="L51">        this.season = CommonValidation.required(season, &quot;Season&quot;);;</span>
+<span class="fc" id="L52">        validateRaceDate(raceDateTime, season);</span>
+<span class="fc" id="L53">    }</span>
+
+    public static Race create(String name, LocalDateTime raceDateTime, CarCategory carCategory, String circuit, Season season) {
+<span class="fc" id="L56">        return new Race(name, raceDateTime, carCategory, circuit, season);</span>
+    }
+
+    public LocalDateTime getLobbyAnnouncementTime() {
+<span class="fc" id="L60">        return this.raceDateTime.minusMinutes(this.lobbyLeadTimeMinutes);</span>
+    }
+
+    public void updateName(String newName) {
+<span class="fc" id="L64">        String name = CommonValidation.requiredText(newName, &quot;Race&quot;, 5);</span>
+<span class="fc" id="L65">        updateField(name, this.name, value -&gt; {</span>
+<span class="fc" id="L66">            this.name = value;</span>
+<span class="fc" id="L67">        });</span>
+<span class="fc" id="L68">    }</span>
+
+    public void updateRaceDateTime(LocalDateTime newRaceDateTime) {
+<span class="fc" id="L71">        CommonValidation.required(newRaceDateTime, &quot;Race date&quot;);</span>
+<span class="fc" id="L72">        validateRaceDate(newRaceDateTime, this.season);</span>
+<span class="fc" id="L73">        updateField(newRaceDateTime, this.raceDateTime, value -&gt; {</span>
+<span class="fc" id="L74">            this.raceDateTime = value;</span>
+<span class="fc" id="L75">        });</span>
+<span class="fc" id="L76">    }</span>
+
+    public void updateLobbyLeadTime(Integer newLeadTime) {
+<span class="fc bfc" id="L79" title="All 4 branches covered.">        if (newLeadTime == null || newLeadTime &lt; 0) {</span>
+<span class="fc" id="L80">            throw new BusinessRuleException(&quot;Lobby lead time cannot be negative.&quot;);</span>
+        }
+<span class="fc" id="L82">        updateField(newLeadTime, this.lobbyLeadTimeMinutes, value -&gt; {</span>
+<span class="fc" id="L83">            this.lobbyLeadTimeMinutes = value;</span>
+<span class="fc" id="L84">        });</span>
+<span class="fc" id="L85">    }</span>
+
+    public void updateCarCategory(CarCategory newCarCategory) {
+<span class="fc" id="L88">        CommonValidation.required(newCarCategory, &quot;Car category&quot;);</span>
+<span class="fc" id="L89">        updateField(newCarCategory, this.carCategory, value -&gt; {</span>
+<span class="fc" id="L90">            this.carCategory = value;</span>
+<span class="fc" id="L91">        });</span>
+<span class="fc" id="L92">    }</span>
+
+    public void updateCircuit(String newCircuit) {
+<span class="fc" id="L95">        CommonValidation.requiredText(newCircuit, &quot;Circuit&quot;, 5);</span>
+<span class="fc" id="L96">        updateField(newCircuit, this.circuit, value -&gt; {</span>
+<span class="fc" id="L97">            this.circuit = value;</span>
+<span class="fc" id="L98">        });</span>
+<span class="fc" id="L99">    }</span>
+
+    private void validateRaceDate(LocalDateTime dateTime, Season season) {
+<span class="fc" id="L102">        LocalDate raceDate = dateTime.toLocalDate();</span>
+<span class="fc bfc" id="L103" title="All 4 branches covered.">        if (raceDate.isBefore(season.getStartDate()) || raceDate.isAfter(season.getEndDate())) {</span>
+<span class="fc" id="L104">            throw new BusinessRuleException(&quot;Race date is outside the season interval.&quot;);</span>
+        }
+<span class="fc" id="L106">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

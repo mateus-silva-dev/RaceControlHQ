@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UrlValidation.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">RaceControl HQ</a> &gt; <a href="index.source.html" class="el_package">com.racecontrol.api.domain.validation</a> &gt; <span class="el_source">UrlValidation.java</span></div><h1>UrlValidation.java</h1><pre class="source lang-java linenums">package com.racecontrol.api.domain.validation;
+
+import com.racecontrol.api.core.code.Code;
+import com.racecontrol.api.core.exception.BusinessRuleException;
+
+<span class="nc" id="L6">public class UrlValidation {</span>
+
+    public static String validateUrl(String value, String field) {
+<span class="fc bfc" id="L9" title="All 4 branches covered.">        if (value == null || value.isBlank()) {</span>
+<span class="fc" id="L10">            throw new BusinessRuleException(field + &quot; cannot be empty.&quot;, Code.EMPTY_FIELD);</span>
+        }
+
+<span class="fc" id="L13">        String normalized = normalize(value);</span>
+
+<span class="fc bfc" id="L15" title="All 2 branches covered.">        if (isClearlyInvalid(normalized)) {</span>
+<span class="fc" id="L16">            throw new BusinessRuleException(</span>
+                    &quot;The URL for &quot; + field + &quot; is invalid.&quot;,
+                    Code.INVALID_URL
+            );
+        }
+
+<span class="fc" id="L22">        String lower = normalized.toLowerCase();</span>
+
+<span class="fc bfc" id="L24" title="All 2 branches covered.">        if (lower.startsWith(&quot;http://&quot;)) {</span>
+<span class="fc" id="L25">            normalized = &quot;https://&quot; + normalized.substring(7);</span>
+<span class="fc bfc" id="L26" title="All 2 branches covered.">        } else if (lower.startsWith(&quot;https://&quot;)) {</span>
+<span class="fc" id="L27">            normalized = &quot;https://&quot; + normalized.substring(8);</span>
+        } else {
+<span class="fc" id="L29">            normalized = &quot;https://&quot; + normalized;</span>
+        }
+
+<span class="pc bpc" id="L32" title="1 of 2 branches missed.">        if (!isValidUrl(normalized)) {</span>
+<span class="nc" id="L33">            throw new BusinessRuleException(</span>
+                    &quot;The URL for &quot; + field + &quot; is invalid.&quot;,
+                    Code.INVALID_URL
+            );
+        }
+
+<span class="fc" id="L39">        return normalized;</span>
+    }
+
+    private static String normalize(String value) {
+<span class="fc" id="L43">        return value.trim();</span>
+    }
+
+    private static boolean isClearlyInvalid(String value) {
+<span class="pc bpc" id="L47" title="1 of 4 branches missed.">        return !value.contains(&quot;.&quot;) || value.contains(&quot; &quot;);</span>
+    }
+
+    private static boolean isValidUrl(String url) {
+        try {
+<span class="fc" id="L52">            new java.net.URI(url);</span>
+<span class="fc" id="L53">            return url.contains(&quot;.&quot;);</span>
+<span class="nc" id="L54">        } catch (Exception e) {</span>
+<span class="nc" id="L55">            return false;</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CommonValidation.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">RaceControl HQ</a> &gt; <a href="index.source.html" class="el_package">com.racecontrol.api.domain.validation</a> &gt; <span class="el_source">CommonValidation.java</span></div><h1>CommonValidation.java</h1><pre class="source lang-java linenums">package com.racecontrol.api.domain.validation;
+
+import com.racecontrol.api.core.code.Code;
+import com.racecontrol.api.core.exception.BusinessRuleException;
+
+<span class="nc" id="L6">public class CommonValidation {</span>
+
+    public static &lt;T&gt; T required(T value, String field) {
+<span class="fc bfc" id="L9" title="All 2 branches covered.">        if (value == null) {</span>
+<span class="fc" id="L10">            throw new BusinessRuleException(field + &quot; is mandatory.&quot;, Code.EMPTY_FIELD);</span>
+        }
+<span class="fc" id="L12">        return value;</span>
+    }
+
+    public static String requiredText(String value, String field, int minLength) {
+<span class="fc bfc" id="L16" title="All 4 branches covered.">        if (value == null || value.isBlank()) {</span>
+<span class="fc" id="L17">            throw new BusinessRuleException(field + &quot; cannot be empty.&quot;, Code.EMPTY_FIELD);</span>
+        }
+
+<span class="fc" id="L20">        String normalized = value.trim().replaceAll(&quot;\\s+&quot;, &quot; &quot;);</span>
+
+<span class="fc bfc" id="L22" title="All 2 branches covered.">        if (normalized.length() &lt; minLength) {</span>
+<span class="fc" id="L23">            throw new BusinessRuleException(field + &quot; must be at least &quot; + minLength + &quot; characters long.&quot;);</span>
+        }
+
+<span class="fc" id="L26">        return normalized;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

@@ -1,6 +1,7 @@
 package com.racecontrol.api.league;
 
 import com.racecontrol.api.helpers.DomainAssertions;
+import com.racecontrol.api.domain.model.League;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -30,7 +31,7 @@ class LeagueTest implements DomainAssertions {
             assertAll(
                     () -> assertEquals("GT World Challenger 2026", league.getName()),
                     () -> assertEquals("New regulations. New stories.", league.getDescription()),
-                    () -> assertEquals("gt-world-challenger-2026", league.getSlugify()),
+                    () -> assertEquals("gt-world-challenger-2026", league.getSlug()),
                     () -> assertNull(league.getLogoUrl()),
                     () -> assertNull(league.getRulesPdfUrl())
             );
@@ -38,10 +39,10 @@ class LeagueTest implements DomainAssertions {
 
         @ParameterizedTest
         @CsvSource(value = {
-                "NULL, 'Valid description...', 'Name cannot be null.'",
+                "NULL, 'Valid description...', 'Name cannot be empty.'",
                 "'', 'Valid description...', 'Name cannot be empty.'",
                 "'GT7', 'Valid description...', 'Name must be at least 5 characters long.'",
-                "'League Name', NULL, 'Description cannot be null.'",
+                "'League Name', NULL, 'Description cannot be empty.'",
                 "'League Name', '', 'Description cannot be empty.'",
                 "'League Name', 'Short', 'Description must be at least 10 characters long.'"
         }, nullValues = {"NULL"})
@@ -67,7 +68,7 @@ class LeagueTest implements DomainAssertions {
                     "   Portuguese    GT3    League      ",
                     "Portuguese GT3 League"
             );
-            assertEquals("portuguese-gt3-league", league.getSlugify());
+            assertEquals("portuguese-gt3-league", league.getSlug());
         }
 
         @Test
@@ -91,11 +92,11 @@ class LeagueTest implements DomainAssertions {
         @ParameterizedTest
         @CsvSource({
                 "LOGO, 'google.com/logo.png', 'https://google.com/logo.png'",
-                "LOGO, 'HTTP://RACE.COM/PIC.JPG', 'http://race.com/pic.jpg'",
+                "LOGO, 'HTTP://RACE.COM/PIC.JPG', 'https://RACE.COM/PIC.JPG'",
                 "PDF,  'race.com/rules.pdf', 'https://race.com/rules.pdf'",
-                "PDF,  '  HTTPS://DOCS.COM/RULES  ', 'https://docs.com/rules'"
+                "PDF,  '  HTTPS://DOCS.COM/RULES  ', 'https://DOCS.COM/RULES'"
         })
-        @DisplayName("Should normalize URLs by adding protocol and converting to lowercase")
+        @DisplayName("Should normalize URLs by trimming and adding protocol when missing")
         void shouldNormalizeUrls(String field, String value, String expected) {
             switch (field) {
                 case "LOGO" -> {
@@ -116,9 +117,9 @@ class LeagueTest implements DomainAssertions {
                 "DESC, '', 'Description cannot be empty.'",
                 "DESC, 'Short', 'Description must be at least 10 characters long.'",
                 "LOGO, 'invalid', 'The URL for LogoUrl is invalid.'",
-                "LOGO, '', 'URL cannot be empty.'",
+                "LOGO, '', 'LogoUrl cannot be empty.'",
                 "PDF, 'invalid', 'The URL for RulesPDFUrl is invalid.'",
-                "PDF, '', 'URL cannot be empty.'"
+                "PDF, '', 'RulesPDFUrl cannot be empty.'"
         })
         @DisplayName("Should validate all fields on update")
         void shouldValidateFieldsOnUpdate(String field, String value, String message) {

@@ -1,6 +1,8 @@
 package com.racecontrol.api.season;
 
 import com.racecontrol.api.helpers.DomainAssertions;
+import com.racecontrol.api.domain.model.Season;
+import com.racecontrol.api.domain.model.enums.SeasonStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

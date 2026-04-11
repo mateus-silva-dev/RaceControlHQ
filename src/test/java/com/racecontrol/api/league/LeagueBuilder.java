@@ -1,5 +1,6 @@
 package com.racecontrol.api.league;
 
+import com.racecontrol.api.domain.model.League;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.UUID;
@@ -9,7 +10,7 @@ public class LeagueBuilder {
     private UUID id = UUID.randomUUID();
     private String name = "GT World Challenger 2026";
     private String description = "New regulations. New stories.";
-    private String slugify = "gt-world-challenger-2026";
+    private String slug = "gt-world-challenger-2026";
     private String logoUrl = null;
     private String rulesPdfUrl = null;
     private int pointsPole = 0;
@@ -35,7 +36,7 @@ public class LeagueBuilder {
     }
 
     public LeagueBuilder withSlugify(String slugify) {
-        this.slugify = slugify;
+        this.slug = slugify;
         return this;
     }
 
@@ -64,11 +65,15 @@ public class LeagueBuilder {
         if (this.id != null) {
             ReflectionTestUtils.setField(league, "id", this.id);
         }
-        if (this.slugify != null) {
-            ReflectionTestUtils.setField(league, "slugify", this.slugify);
+        if (this.slug != null) {
+            ReflectionTestUtils.setField(league, "slug", this.slug);
         }
-        league.updateLogoUrl(this.logoUrl);
-        league.updateRulesPdfUrl(this.rulesPdfUrl);
+        if (this.logoUrl != null) {
+            league.updateLogoUrl(this.logoUrl);
+        }
+        if (this.rulesPdfUrl != null) {
+            league.updateRulesPdfUrl(this.rulesPdfUrl);
+        }
 
         return league;
     }

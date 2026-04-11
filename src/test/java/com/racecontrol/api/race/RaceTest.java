@@ -1,6 +1,8 @@
 package com.racecontrol.api.race;
 
 import com.racecontrol.api.helpers.DomainAssertions;
+import com.racecontrol.api.domain.model.Race;
+import com.racecontrol.api.domain.model.enums.CarCategory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

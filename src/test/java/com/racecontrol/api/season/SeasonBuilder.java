@@ -1,7 +1,9 @@
 package com.racecontrol.api.season;
 
-import com.racecontrol.api.league.League;
+import com.racecontrol.api.domain.model.League;
 import com.racecontrol.api.league.LeagueBuilder;
+import com.racecontrol.api.domain.model.Season;
+import com.racecontrol.api.domain.model.enums.SeasonStatus;
 
 import java.time.Clock;
 import java.time.LocalDate;

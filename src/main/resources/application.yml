@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: RaceControl HQ
+
+  profiles:
+    active: local

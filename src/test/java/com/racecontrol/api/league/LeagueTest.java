@@ -1,0 +1,166 @@
+package com.racecontrol.api.league;
+
+import com.racecontrol.api.helpers.DomainAssertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.*;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+@DisplayName("League")
+class LeagueTest implements DomainAssertions {
+
+    private League league;
+
+    @BeforeEach
+    void setUp() {
+        league = LeagueBuilder.league().build();
+    }
+
+    @Nested
+    @DisplayName("Creation Scenarios")
+    class LeagueCreation {
+
+        @Test
+        @DisplayName("Should successfully create a league with default builder values")
+        void mustSuccessfullyCreateALeague() {
+            assertAll(
+                    () -> assertEquals("GT World Challenger 2026", league.getName()),
+                    () -> assertEquals("New regulations. New stories.", league.getDescription()),
+                    () -> assertEquals("gt-world-challenger-2026", league.getSlugify()),
+                    () -> assertNull(league.getLogoUrl()),
+                    () -> assertNull(league.getRulesPdfUrl())
+            );
+        }
+
+        @ParameterizedTest
+        @CsvSource(value = {
+                "NULL, 'Valid description...', 'Name cannot be null.'",
+                "'', 'Valid description...', 'Name cannot be empty.'",
+                "'GT7', 'Valid description...', 'Name must be at least 5 characters long.'",
+                "'League Name', NULL, 'Description cannot be null.'",
+                "'League Name', '', 'Description cannot be empty.'",
+                "'League Name', 'Short', 'Description must be at least 10 characters long.'"
+        }, nullValues = {"NULL"})
+        @DisplayName("Should throw exception for invalid name or description during creation")
+        void shouldThrowWhenCreationInputsAreInvalid(String name, String description, String message) {
+            assertThatBusinessException(
+                    () -> LeagueBuilder.league().withName(name).withDescription(description).build(),
+                    message
+            );
+        }
+    }
+
+    @Nested
+    @DisplayName("Update Scenarios")
+    class LeagueUpdate {
+
+        @Test
+        @DisplayName("Should update name and regenerate slugify")
+        void shouldUpdateNameAndSlug() {
+            assertUpdateWorkflow(
+                    league::updateName,
+                    league::getName,
+                    "   Portuguese    GT3    League      ",
+                    "Portuguese GT3 League"
+            );
+            assertEquals("portuguese-gt3-league", league.getSlugify());
+        }
+
+        @Test
+        @DisplayName("Should update description and normalize spaces")
+        void shouldUpdateDescription() {
+            assertUpdateWorkflow(
+                    league::updateDescription,
+                    league::getDescription,
+                    "   New    Regulation    2026   ",
+                    "New Regulation 2026"
+            );
+        }
+
+        @Test
+        @DisplayName("Should update logo and PDF URLs")
+        void shouldUpdateUrls() {
+            assertUpdateWorkflow(league::updateLogoUrl, league::getLogoUrl, "google.com/logo.png", "https://google.com/logo.png");
+            assertUpdateWorkflow(league::updateRulesPdfUrl, league::getRulesPdfUrl, "google.com/rules.pdf", "https://google.com/rules.pdf");
+        }
+
+        @ParameterizedTest
+        @CsvSource({
+                "LOGO, 'google.com/logo.png', 'https://google.com/logo.png'",
+                "LOGO, 'HTTP://RACE.COM/PIC.JPG', 'http://race.com/pic.jpg'",
+                "PDF,  'race.com/rules.pdf', 'https://race.com/rules.pdf'",
+                "PDF,  '  HTTPS://DOCS.COM/RULES  ', 'https://docs.com/rules'"
+        })
+        @DisplayName("Should normalize URLs by adding protocol and converting to lowercase")
+        void shouldNormalizeUrls(String field, String value, String expected) {
+            switch (field) {
+                case "LOGO" -> {
+                    league.updateLogoUrl(value);
+                    assertEquals(expected, league.getLogoUrl());
+                }
+                case "PDF" -> {
+                    league.updateRulesPdfUrl(value);
+                    assertEquals(expected, league.getRulesPdfUrl());
+                }
+            }
+        }
+
+        @ParameterizedTest
+        @CsvSource({
+                "NAME, '', 'Name cannot be empty.'",
+                "NAME, 'GT7', 'Name must be at least 5 characters long.'",
+                "DESC, '', 'Description cannot be empty.'",
+                "DESC, 'Short', 'Description must be at least 10 characters long.'",
+                "LOGO, 'invalid', 'The URL for LogoUrl is invalid.'",
+                "LOGO, '', 'URL cannot be empty.'",
+                "PDF, 'invalid', 'The URL for RulesPDFUrl is invalid.'",
+                "PDF, '', 'URL cannot be empty.'"
+        })
+        @DisplayName("Should validate all fields on update")
+        void shouldValidateFieldsOnUpdate(String field, String value, String message) {
+            assertThatBusinessException(() -> {
+                switch (field) {
+                    case "NAME" -> league.updateName(value);
+                    case "DESC" -> league.updateDescription(value);
+                    case "LOGO" -> league.updateLogoUrl(value);
+                    case "PDF" -> league.updateRulesPdfUrl(value);
+                }
+            }, message);
+        }
+    }
+
+    @Nested
+    @DisplayName("Configure Extra Points")
+    class ConfigureExtraPoints {
+
+        @Test
+        @DisplayName("Should configure extra points correctly")
+        void shouldConfigureExtraPoints() {
+            league.configureExtraPoints(1, 2);
+            assertAll(
+                    () -> assertEquals(1, league.getPointsPole()),
+                    () -> assertEquals(2, league.getPointsFastestLap())
+            );
+        }
+
+        @ParameterizedTest
+        @CsvSource({
+                "-1, 0, 'Points cannot be negative.'",
+                "0, -1, 'Points cannot be negative.'",
+                "-2, -2, 'Points cannot be negative.'"
+        })
+        @DisplayName("Should throw exception when extra points are negative")
+        void shouldThrowWhenExtraPointsAreNegative(int pole, int fastest, String message) {
+            assertThatBusinessException(
+                    () -> league.configureExtraPoints(pole, fastest),
+                    message
+            );
+        }
+
+    }
+
+}

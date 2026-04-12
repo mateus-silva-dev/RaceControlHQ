@@ -1,4 +1,4 @@
-package com.racecontrol.api.domain.model.valueObject;
+package com.racecontrol.api.domain.valueObject;
 
 import com.racecontrol.api.core.exception.BusinessRuleException;
 import jakarta.persistence.Column;
@@ -18,17 +18,19 @@ public class HexColor {
     private String value;
 
     public HexColor(String value) {
+        if (value == null || value.isBlank()) {
+            value = "#000000";
+        }
         String normalized = normalize(value);
 
         if (!isValid(normalized)) {
-            throw new BusinessRuleException("Invalid HEX color");
+            throw new BusinessRuleException("Invalid HEX color.");
         }
 
         this.value = normalized;
     }
 
     private String normalize(String value) {
-        if (value == null) return null;
         String trimmed = value.trim();
         if (!trimmed.startsWith("#")) {
             trimmed = "#" + trimmed;

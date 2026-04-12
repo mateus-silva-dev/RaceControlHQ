@@ -1,4 +1,4 @@
-package com.racecontrol.api.domain.model.valueObject;
+package com.racecontrol.api.domain.valueObject;
 
 import com.racecontrol.api.core.exception.BusinessRuleException;
 import jakarta.persistence.Column;

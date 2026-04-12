@@ -1,4 +1,4 @@
-package com.racecontrol.api.helpers;
+package com.racecontrol.api.support.assertions;
 
 import com.racecontrol.api.core.exception.BusinessRuleException;
 import org.assertj.core.api.ThrowableAssert;
@@ -24,16 +24,10 @@ public interface DomainAssertions {
         assertThat(getterMethod.get()).isEqualTo(expectedValue);
     }
 
-    default void assertNoChange(
-            Runnable action,
-            Supplier<?>... getters
-    ) {
+    default void assertNoChange(Runnable action, Supplier<?>... getters) {
         Object[] before = captureState(getters);
-
         action.run();
-
         Object[] after = captureState(getters);
-
         assertThat(after)
                 .as("State should not change")
                 .containsExactly(before);
@@ -44,18 +38,11 @@ public interface DomainAssertions {
      * - Pode alterar na primeira execução
      * - Não altera na segunda (idempotência)
      */
-    default void assertIdempotent(
-            Runnable action,
-            Supplier<?>... getters
-    ) {
+    default void assertIdempotent(Runnable action, Supplier<?>... getters) {
         action.run();
-
         Object[] afterFirst = captureState(getters);
-
         action.run();
-
         Object[] afterSecond = captureState(getters);
-
         assertThat(afterSecond)
                 .as("Second execution should not change state")
                 .containsExactly(afterFirst);

@@ -1,12 +1,9 @@
-package com.racecontrol.api.modelTest;
+package com.racecontrol.api.model;
 
-import com.racecontrol.api.builders.DriverBuilder;
-import com.racecontrol.api.builders.RaceBuilder;
+import com.racecontrol.api.support.builders.DriverBuilder;
 import com.racecontrol.api.domain.model.Driver;
-import com.racecontrol.api.domain.model.enums.CarCategory;
 import com.racecontrol.api.domain.model.valueObject.Nationality;
-import com.racecontrol.api.helpers.DomainAssertions;
-import org.aspectj.lang.annotation.Before;
+import com.racecontrol.api.support.assertions.DomainAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -72,7 +69,12 @@ public class DriverTest implements DomainAssertions {
         void shouldThrowWhenCreationInputsAreInvalid(String name, LocalDate birthDate, String countryCode, String gamerTag, String message) {
             assertThatBusinessException(() -> {
                 Nationality nationality = (countryCode == null) ? null : new Nationality(countryCode);
-                Driver.create(name, birthDate, nationality, gamerTag, fixedClock);
+                DriverBuilder.driver()
+                        .withName(name)
+                        .withBirthDate(birthDate)
+                        .withNationality(nationality)
+                        .withGamerTag(gamerTag)
+                        .build();
             }, message);
         }
 

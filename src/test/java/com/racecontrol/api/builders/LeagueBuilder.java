@@ -1,4 +1,4 @@
-package com.racecontrol.api.league;
+package com.racecontrol.api.builders;
 
 import com.racecontrol.api.domain.model.League;
 import org.springframework.test.util.ReflectionTestUtils;

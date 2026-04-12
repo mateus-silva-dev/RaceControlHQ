@@ -1,7 +1,8 @@
-package com.racecontrol.api.league;
+package com.racecontrol.api.modelTest;
 
 import com.racecontrol.api.helpers.DomainAssertions;
 import com.racecontrol.api.domain.model.League;
+import com.racecontrol.api.builders.LeagueBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

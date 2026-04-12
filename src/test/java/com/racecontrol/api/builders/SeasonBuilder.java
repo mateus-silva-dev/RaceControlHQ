@@ -1,7 +1,6 @@
-package com.racecontrol.api.season;
+package com.racecontrol.api.builders;
 
 import com.racecontrol.api.domain.model.League;
-import com.racecontrol.api.league.LeagueBuilder;
 import com.racecontrol.api.domain.model.Season;
 import com.racecontrol.api.domain.model.enums.SeasonStatus;
 

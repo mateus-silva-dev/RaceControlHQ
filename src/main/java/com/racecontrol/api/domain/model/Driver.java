@@ -43,9 +43,9 @@ public class Driver extends BaseEntity {
 
     public Driver(String name, LocalDate birthDate, Nationality nationality, String gamerTag, Clock clock) {
         this.name = CommonValidation.requiredText(name, "Name", 3);
-        validateBirthDate(clock);
         this.birthDate = CommonValidation.required(birthDate, "Birth date");
-        this.nationality = nationality;
+        validateBirthDate(clock);
+        this.nationality = CommonValidation.required(nationality, "Nationality");
         this.gamerTag = CommonValidation.requiredText(gamerTag, "Gamer tag", 3);
         this.active = true;
     }

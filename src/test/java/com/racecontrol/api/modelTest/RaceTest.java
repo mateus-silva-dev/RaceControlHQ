@@ -228,5 +228,4 @@ public class RaceTest implements DomainAssertions {
 
     }
 
-
 }

@@ -26,7 +26,7 @@ public class Nationality {
         String normalized = countryCode == null ? null : countryCode.trim().toUpperCase();
 
         if (normalized == null || !ISO_CODES.contains(normalized)) {
-            throw new BusinessRuleException("Invalid country code");
+            throw new BusinessRuleException("Invalid country code.");
         }
 
         this.countryCode = normalized;

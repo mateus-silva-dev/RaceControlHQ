@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Driver.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">RaceControl HQ</a> &gt; <a href="index.source.html" class="el_package">com.racecontrol.api.domain.model</a> &gt; <span class="el_source">Driver.java</span></div><h1>Driver.java</h1><pre class="source lang-java linenums">package com.racecontrol.api.domain.model;
+
+import com.racecontrol.api.core.exception.BusinessRuleException;
+import com.racecontrol.api.domain.valueObject.Nationality;
+import com.racecontrol.api.domain.validation.CommonValidation;
+import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import java.time.Clock;
+import java.time.LocalDate;
+import java.time.Period;
+import java.util.UUID;
+
+@Entity
+@Table(name = &quot;driver&quot;)
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@EqualsAndHashCode(callSuper = false, of = &quot;id&quot;)
+public class Driver extends BaseEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
+
+    @Column(nullable = false, length = 100)
+    private String name;
+
+    @Column(nullable = false)
+    private LocalDate birthDate;
+
+    @Embedded
+    @Column(nullable = false)
+    private Nationality nationality;
+
+    @Column(nullable = false, unique = true, length = 100)
+    private String gamerTag;
+
+    @Column(nullable = false)
+    private boolean active;
+
+<span class="fc" id="L44">    public Driver(String name, LocalDate birthDate, Nationality nationality, String gamerTag, Clock clock) {</span>
+<span class="fc" id="L45">        this.name = CommonValidation.requiredText(name, &quot;Name&quot;, 3);</span>
+<span class="fc" id="L46">        this.birthDate = CommonValidation.requiredMinAge(birthDate, &quot;Birth date&quot;, 13);</span>
+<span class="fc" id="L47">        this.nationality = CommonValidation.required(nationality, &quot;Nationality&quot;);</span>
+<span class="fc" id="L48">        this.gamerTag = CommonValidation.requiredText(gamerTag, &quot;Gamer tag&quot;, 3);</span>
+<span class="fc" id="L49">        this.active = true;</span>
+<span class="fc" id="L50">    }</span>
+
+    public static Driver create(String name, LocalDate birthDate, Nationality nationality, String gamerTag, Clock clock) {
+<span class="fc" id="L53">        return new Driver(name, birthDate, nationality, gamerTag, clock);</span>
+    }
+
+
+    public void updateName(String newName) {
+<span class="fc" id="L58">        String name = CommonValidation.requiredText(newName, &quot;Name&quot;, 3);</span>
+<span class="fc" id="L59">        updateField(name, this.name, value -&gt; {</span>
+<span class="fc" id="L60">            this.name = value;</span>
+<span class="fc" id="L61">        });</span>
+<span class="fc" id="L62">    }</span>
+
+    public void updateGamerTag(String newGamerTag) {
+<span class="fc" id="L65">        String gamerTag = CommonValidation.requiredText(newGamerTag, &quot;Gamer tag&quot;, 3);</span>
+<span class="fc" id="L66">        updateField(gamerTag, this.gamerTag, value -&gt; {</span>
+<span class="fc" id="L67">            this.gamerTag = value;</span>
+<span class="fc" id="L68">        });</span>
+<span class="fc" id="L69">    }</span>
+
+    public Integer getAge(Clock clock) {
+<span class="fc" id="L72">        return Period.between(this.birthDate, LocalDate.now(clock)).getYears();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

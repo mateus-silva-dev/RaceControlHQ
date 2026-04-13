@@ -56,54 +56,57 @@ public class Race extends BaseEntity {
 <span class="fc" id="L56">        return new Race(name, raceDateTime, carCategory, circuit, season);</span>
     }
 
+
     public LocalDateTime getLobbyAnnouncementTime() {
-<span class="fc" id="L60">        return this.raceDateTime.minusMinutes(this.lobbyLeadTimeMinutes);</span>
+<span class="fc" id="L61">        return this.raceDateTime.minusMinutes(this.lobbyLeadTimeMinutes);</span>
     }
 
     public void updateName(String newName) {
-<span class="fc" id="L64">        String name = CommonValidation.requiredText(newName, &quot;Race&quot;, 5);</span>
-<span class="fc" id="L65">        updateField(name, this.name, value -&gt; {</span>
-<span class="fc" id="L66">            this.name = value;</span>
-<span class="fc" id="L67">        });</span>
-<span class="fc" id="L68">    }</span>
+<span class="fc" id="L65">        String name = CommonValidation.requiredText(newName, &quot;Race&quot;, 5);</span>
+<span class="fc" id="L66">        updateField(name, this.name, value -&gt; {</span>
+<span class="fc" id="L67">            this.name = value;</span>
+<span class="fc" id="L68">        });</span>
+<span class="fc" id="L69">    }</span>
 
     public void updateRaceDateTime(LocalDateTime newRaceDateTime) {
-<span class="fc" id="L71">        CommonValidation.required(newRaceDateTime, &quot;Race date&quot;);</span>
-<span class="fc" id="L72">        validateRaceDate(newRaceDateTime, this.season);</span>
-<span class="fc" id="L73">        updateField(newRaceDateTime, this.raceDateTime, value -&gt; {</span>
-<span class="fc" id="L74">            this.raceDateTime = value;</span>
-<span class="fc" id="L75">        });</span>
-<span class="fc" id="L76">    }</span>
+<span class="fc" id="L72">        CommonValidation.required(newRaceDateTime, &quot;Race date&quot;);</span>
+<span class="fc" id="L73">        validateRaceDate(newRaceDateTime, this.season);</span>
+<span class="fc" id="L74">        updateField(newRaceDateTime, this.raceDateTime, value -&gt; {</span>
+<span class="fc" id="L75">            this.raceDateTime = value;</span>
+<span class="fc" id="L76">        });</span>
+<span class="fc" id="L77">    }</span>
 
     public void updateLobbyLeadTime(Integer newLeadTime) {
-<span class="fc bfc" id="L79" title="All 4 branches covered.">        if (newLeadTime == null || newLeadTime &lt; 0) {</span>
-<span class="fc" id="L80">            throw new BusinessRuleException(&quot;Lobby lead time cannot be negative.&quot;);</span>
+<span class="fc bfc" id="L80" title="All 4 branches covered.">        if (newLeadTime == null || newLeadTime &lt; 0) {</span>
+<span class="fc" id="L81">            throw new BusinessRuleException(&quot;Lobby lead time cannot be negative.&quot;);</span>
         }
-<span class="fc" id="L82">        updateField(newLeadTime, this.lobbyLeadTimeMinutes, value -&gt; {</span>
-<span class="fc" id="L83">            this.lobbyLeadTimeMinutes = value;</span>
-<span class="fc" id="L84">        });</span>
-<span class="fc" id="L85">    }</span>
+<span class="fc" id="L83">        updateField(newLeadTime, this.lobbyLeadTimeMinutes, value -&gt; {</span>
+<span class="fc" id="L84">            this.lobbyLeadTimeMinutes = value;</span>
+<span class="fc" id="L85">        });</span>
+<span class="fc" id="L86">    }</span>
 
     public void updateCarCategory(CarCategory newCarCategory) {
-<span class="fc" id="L88">        CommonValidation.required(newCarCategory, &quot;Car category&quot;);</span>
-<span class="fc" id="L89">        updateField(newCarCategory, this.carCategory, value -&gt; {</span>
-<span class="fc" id="L90">            this.carCategory = value;</span>
-<span class="fc" id="L91">        });</span>
-<span class="fc" id="L92">    }</span>
+<span class="fc" id="L89">        CommonValidation.required(newCarCategory, &quot;Car category&quot;);</span>
+<span class="fc" id="L90">        updateField(newCarCategory, this.carCategory, value -&gt; {</span>
+<span class="fc" id="L91">            this.carCategory = value;</span>
+<span class="fc" id="L92">        });</span>
+<span class="fc" id="L93">    }</span>
 
     public void updateCircuit(String newCircuit) {
-<span class="fc" id="L95">        CommonValidation.requiredText(newCircuit, &quot;Circuit&quot;, 5);</span>
-<span class="fc" id="L96">        updateField(newCircuit, this.circuit, value -&gt; {</span>
-<span class="fc" id="L97">            this.circuit = value;</span>
-<span class="fc" id="L98">        });</span>
-<span class="fc" id="L99">    }</span>
+<span class="fc" id="L96">        CommonValidation.requiredText(newCircuit, &quot;Circuit&quot;, 5);</span>
+<span class="fc" id="L97">        updateField(newCircuit, this.circuit, value -&gt; {</span>
+<span class="fc" id="L98">            this.circuit = value;</span>
+<span class="fc" id="L99">        });</span>
+<span class="fc" id="L100">    }</span>
 
     private void validateRaceDate(LocalDateTime dateTime, Season season) {
-<span class="fc" id="L102">        LocalDate raceDate = dateTime.toLocalDate();</span>
-<span class="fc bfc" id="L103" title="All 4 branches covered.">        if (raceDate.isBefore(season.getStartDate()) || raceDate.isAfter(season.getEndDate())) {</span>
-<span class="fc" id="L104">            throw new BusinessRuleException(&quot;Race date is outside the season interval.&quot;);</span>
+<span class="fc" id="L103">        CommonValidation.required(dateTime, &quot;Race date&quot;);</span>
+<span class="fc" id="L104">        CommonValidation.required(season, &quot;Season&quot;);</span>
+<span class="fc" id="L105">        LocalDate raceDate = dateTime.toLocalDate();</span>
+<span class="fc bfc" id="L106" title="All 4 branches covered.">        if (raceDate.isBefore(season.getStartDate()) || raceDate.isAfter(season.getEndDate())) {</span>
+<span class="fc" id="L107">            throw new BusinessRuleException(&quot;Race date is outside the season interval.&quot;);</span>
         }
-<span class="fc" id="L106">    }</span>
+<span class="fc" id="L109">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

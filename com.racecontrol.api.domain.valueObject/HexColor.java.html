@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>HexColor.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">RaceControl HQ</a> &gt; <a href="index.source.html" class="el_package">com.racecontrol.api.domain.valueObject</a> &gt; <span class="el_source">HexColor.java</span></div><h1>HexColor.java</h1><pre class="source lang-java linenums">package com.racecontrol.api.domain.valueObject;
+
+import com.racecontrol.api.core.exception.BusinessRuleException;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Embeddable
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@EqualsAndHashCode(of = &quot;value&quot;)
+public class HexColor {
+
+    @Column(name = &quot;hex_color&quot;, nullable = false, length = 7)
+    private String value;
+
+<span class="fc" id="L20">    public HexColor(String value) {</span>
+<span class="fc bfc" id="L21" title="All 4 branches covered.">        if (value == null || value.isBlank()) {</span>
+<span class="fc" id="L22">            value = &quot;#000000&quot;;</span>
+        }
+<span class="fc" id="L24">        String normalized = normalize(value);</span>
+
+<span class="fc bfc" id="L26" title="All 2 branches covered.">        if (!isValid(normalized)) {</span>
+<span class="fc" id="L27">            throw new BusinessRuleException(&quot;Invalid HEX color.&quot;);</span>
+        }
+
+<span class="fc" id="L30">        this.value = normalized;</span>
+<span class="fc" id="L31">    }</span>
+
+    private String normalize(String value) {
+<span class="fc" id="L34">        String trimmed = value.trim();</span>
+<span class="fc bfc" id="L35" title="All 2 branches covered.">        if (!trimmed.startsWith(&quot;#&quot;)) {</span>
+<span class="fc" id="L36">            trimmed = &quot;#&quot; + trimmed;</span>
+        }
+<span class="fc" id="L38">        return trimmed.toUpperCase();</span>
+    }
+
+    private boolean isValid(String value) {
+<span class="fc" id="L42">        return value.matches(&quot;^#([A-F0-9]{6}|[A-F0-9]{3})$&quot;);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

@@ -3,28 +3,45 @@
 import com.racecontrol.api.core.code.Code;
 import com.racecontrol.api.core.exception.BusinessRuleException;
 
-<span class="nc" id="L6">public class CommonValidation {</span>
+import java.time.LocalDate;
+
+<span class="nc" id="L8">public class CommonValidation {</span>
 
     public static &lt;T&gt; T required(T value, String field) {
-<span class="fc bfc" id="L9" title="All 2 branches covered.">        if (value == null) {</span>
-<span class="fc" id="L10">            throw new BusinessRuleException(field + &quot; is mandatory.&quot;, Code.EMPTY_FIELD);</span>
+<span class="fc bfc" id="L11" title="All 2 branches covered.">        if (value == null) {</span>
+<span class="fc" id="L12">            throw new BusinessRuleException(field + &quot; is mandatory.&quot;, Code.EMPTY_FIELD);</span>
         }
-<span class="fc" id="L12">        return value;</span>
+<span class="fc" id="L14">        return value;</span>
     }
 
     public static String requiredText(String value, String field, int minLength) {
-<span class="fc bfc" id="L16" title="All 4 branches covered.">        if (value == null || value.isBlank()) {</span>
-<span class="fc" id="L17">            throw new BusinessRuleException(field + &quot; cannot be empty.&quot;, Code.EMPTY_FIELD);</span>
+<span class="fc bfc" id="L18" title="All 4 branches covered.">        if (value == null || value.isBlank()) {</span>
+<span class="fc" id="L19">            throw new BusinessRuleException(field + &quot; cannot be empty.&quot;, Code.EMPTY_FIELD);</span>
         }
 
-<span class="fc" id="L20">        String normalized = value.trim().replaceAll(&quot;\\s+&quot;, &quot; &quot;);</span>
+<span class="fc" id="L22">        String normalized = value.trim().replaceAll(&quot;\\s+&quot;, &quot; &quot;);</span>
 
-<span class="fc bfc" id="L22" title="All 2 branches covered.">        if (normalized.length() &lt; minLength) {</span>
-<span class="fc" id="L23">            throw new BusinessRuleException(field + &quot; must be at least &quot; + minLength + &quot; characters long.&quot;);</span>
+<span class="fc bfc" id="L24" title="All 2 branches covered.">        if (normalized.length() &lt; minLength) {</span>
+<span class="fc" id="L25">            throw new BusinessRuleException(field + &quot; must be at least &quot; + minLength + &quot; characters long.&quot;);</span>
         }
 
-<span class="fc" id="L26">        return normalized;</span>
+<span class="fc" id="L28">        return normalized;</span>
     }
 
+    public static LocalDate requiredMinAge(LocalDate birthDate, String field, int minAge) {
+<span class="fc" id="L32">        required(birthDate, field);</span>
+
+<span class="fc" id="L34">        LocalDate today = LocalDate.now();</span>
+<span class="fc" id="L35">        LocalDate minBirthDate = today.minusYears(minAge);</span>
+
+<span class="fc bfc" id="L37" title="All 2 branches covered.">        if (birthDate.isAfter(minBirthDate)) {</span>
+<span class="fc" id="L38">            throw new BusinessRuleException(</span>
+                    field + &quot; must be at least &quot; + minAge + &quot; years old.&quot;,
+                    Code.INVALID_AGE
+            );
+        }
+
+<span class="fc" id="L44">        return birthDate;</span>
+    }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

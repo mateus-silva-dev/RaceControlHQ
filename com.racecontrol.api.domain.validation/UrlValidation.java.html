@@ -10,50 +10,57 @@ import com.racecontrol.api.core.exception.BusinessRuleException;
 <span class="fc" id="L10">            throw new BusinessRuleException(field + &quot; cannot be empty.&quot;, Code.EMPTY_FIELD);</span>
         }
 
-<span class="fc" id="L13">        String normalized = normalize(value);</span>
+<span class="fc" id="L13">        String url = value.trim();</span>
 
-<span class="fc bfc" id="L15" title="All 2 branches covered.">        if (isClearlyInvalid(normalized)) {</span>
+<span class="fc bfc" id="L15" title="All 2 branches covered.">         if (isClearlyInvalid(url)) {</span>
 <span class="fc" id="L16">            throw new BusinessRuleException(</span>
                     &quot;The URL for &quot; + field + &quot; is invalid.&quot;,
                     Code.INVALID_URL
             );
         }
 
-<span class="fc" id="L22">        String lower = normalized.toLowerCase();</span>
-
-<span class="fc bfc" id="L24" title="All 2 branches covered.">        if (lower.startsWith(&quot;http://&quot;)) {</span>
-<span class="fc" id="L25">            normalized = &quot;https://&quot; + normalized.substring(7);</span>
-<span class="fc bfc" id="L26" title="All 2 branches covered.">        } else if (lower.startsWith(&quot;https://&quot;)) {</span>
-<span class="fc" id="L27">            normalized = &quot;https://&quot; + normalized.substring(8);</span>
+<span class="fc" id="L22">        String lower = url.toLowerCase();</span>
+<span class="fc bfc" id="L23" title="All 2 branches covered.">        if (!lower.startsWith(&quot;http&quot;)) {</span>
+<span class="fc" id="L24">            url = &quot;https://&quot; + url.toLowerCase();</span>
         } else {
-<span class="fc" id="L29">            normalized = &quot;https://&quot; + normalized;</span>
+<span class="fc" id="L26">            int protocolEnd = url.indexOf(&quot;://&quot;) + 3;</span>
+<span class="fc" id="L27">            int firstSlash = url.indexOf(&quot;/&quot;, protocolEnd);</span>
+
+<span class="fc bfc" id="L29" title="All 2 branches covered.">            if (firstSlash == -1) {</span>
+<span class="fc" id="L30">                url = url.toLowerCase();</span>
+            } else {
+<span class="fc" id="L32">                String protocolAndDomain = url.substring(0, firstSlash).toLowerCase();</span>
+<span class="fc" id="L33">                String path = url.substring(firstSlash);</span>
+<span class="fc" id="L34">                url = protocolAndDomain + path;</span>
+            }
         }
 
-<span class="pc bpc" id="L32" title="1 of 2 branches missed.">        if (!isValidUrl(normalized)) {</span>
-<span class="nc" id="L33">            throw new BusinessRuleException(</span>
+<span class="fc bfc" id="L38" title="All 2 branches covered.">        if (url.startsWith(&quot;http://&quot;)) {</span>
+<span class="fc" id="L39">            url = &quot;https://&quot; + url.substring(7);</span>
+        }
+
+<span class="fc bfc" id="L42" title="All 2 branches covered.">        if (!isValidUrl(url)) {</span>
+<span class="fc" id="L43">            throw new BusinessRuleException(</span>
                     &quot;The URL for &quot; + field + &quot; is invalid.&quot;,
                     Code.INVALID_URL
             );
         }
 
-<span class="fc" id="L39">        return normalized;</span>
-    }
-
-    private static String normalize(String value) {
-<span class="fc" id="L43">        return value.trim();</span>
+<span class="fc" id="L49">        return url;</span>
     }
 
     private static boolean isClearlyInvalid(String value) {
-<span class="pc bpc" id="L47" title="1 of 4 branches missed.">        return !value.contains(&quot;.&quot;) || value.contains(&quot; &quot;);</span>
+<span class="fc bfc" id="L53" title="All 4 branches covered.">        return !value.contains(&quot;.&quot;) || value.contains(&quot; &quot;);</span>
     }
 
     private static boolean isValidUrl(String url) {
         try {
-<span class="fc" id="L52">            new java.net.URI(url);</span>
-<span class="fc" id="L53">            return url.contains(&quot;.&quot;);</span>
-<span class="nc" id="L54">        } catch (Exception e) {</span>
-<span class="nc" id="L55">            return false;</span>
+<span class="fc" id="L58">            new java.net.URI(url);</span>
+<span class="fc" id="L59">            return url.contains(&quot;.&quot;);</span>
+<span class="fc" id="L60">        } catch (Exception e) {</span>
+<span class="fc" id="L61">            return false;</span>
         }
     }
+
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

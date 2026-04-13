@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Nationality.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">RaceControl HQ</a> &gt; <a href="index.source.html" class="el_package">com.racecontrol.api.domain.valueObject</a> &gt; <span class="el_source">Nationality.java</span></div><h1>Nationality.java</h1><pre class="source lang-java linenums">package com.racecontrol.api.domain.valueObject;
+
+import com.racecontrol.api.core.exception.BusinessRuleException;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import java.util.Locale;
+import java.util.Set;
+
+@Embeddable
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@EqualsAndHashCode(of = &quot;countryCode&quot;)
+public class Nationality {
+
+<span class="fc" id="L20">    private static final Set&lt;String&gt; ISO_CODES = Set.of(Locale.getISOCountries());</span>
+
+    @Column(name = &quot;nationality&quot;, nullable = false, length = 2)
+    private String countryCode;
+
+<span class="fc" id="L25">    public Nationality(String countryCode) {</span>
+<span class="fc bfc" id="L26" title="All 2 branches covered.">        String normalized = countryCode == null ? null : countryCode.trim().toUpperCase();</span>
+
+<span class="fc bfc" id="L28" title="All 4 branches covered.">        if (normalized == null || !ISO_CODES.contains(normalized)) {</span>
+<span class="fc" id="L29">            throw new BusinessRuleException(&quot;Invalid country code.&quot;);</span>
+        }
+
+<span class="fc" id="L32">        this.countryCode = normalized;</span>
+<span class="fc" id="L33">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

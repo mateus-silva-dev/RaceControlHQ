@@ -56,6 +56,7 @@ public class Race extends BaseEntity {
         return new Race(name, raceDateTime, carCategory, circuit, season);
     }
 
+
     public LocalDateTime getLobbyAnnouncementTime() {
         return this.raceDateTime.minusMinutes(this.lobbyLeadTimeMinutes);
     }
@@ -99,6 +100,8 @@ public class Race extends BaseEntity {
     }
 
     private void validateRaceDate(LocalDateTime dateTime, Season season) {
+        CommonValidation.required(dateTime, "Race date");
+        CommonValidation.required(season, "Season");
         LocalDate raceDate = dateTime.toLocalDate();
         if (raceDate.isBefore(season.getStartDate()) || raceDate.isAfter(season.getEndDate())) {
             throw new BusinessRuleException("Race date is outside the season interval.");

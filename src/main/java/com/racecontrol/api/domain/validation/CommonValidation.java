@@ -3,6 +3,8 @@ package com.racecontrol.api.domain.validation;
 import com.racecontrol.api.core.code.Code;
 import com.racecontrol.api.core.exception.BusinessRuleException;
 
+import java.time.LocalDate;
+
 public class CommonValidation {
 
     public static <T> T required(T value, String field) {
@@ -26,4 +28,19 @@ public class CommonValidation {
         return normalized;
     }
 
+    public static LocalDate requiredMinAge(LocalDate birthDate, String field, int minAge) {
+        required(birthDate, field);
+
+        LocalDate today = LocalDate.now();
+        LocalDate minBirthDate = today.minusYears(minAge);
+
+        if (birthDate.isAfter(minBirthDate)) {
+            throw new BusinessRuleException(
+                    field + " must be at least " + minAge + " years old.",
+                    Code.INVALID_AGE
+            );
+        }
+
+        return birthDate;
+    }
 }

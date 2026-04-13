@@ -1,7 +1,7 @@
 package com.racecontrol.api.domain.model;
 
 import com.racecontrol.api.core.exception.BusinessRuleException;
-import com.racecontrol.api.domain.model.valueObject.Nationality;
+import com.racecontrol.api.domain.valueObject.Nationality;
 import com.racecontrol.api.domain.validation.CommonValidation;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -43,8 +43,7 @@ public class Driver extends BaseEntity {
 
     public Driver(String name, LocalDate birthDate, Nationality nationality, String gamerTag, Clock clock) {
         this.name = CommonValidation.requiredText(name, "Name", 3);
-        this.birthDate = CommonValidation.required(birthDate, "Birth date");
-        validateBirthDate(clock);
+        this.birthDate = CommonValidation.requiredMinAge(birthDate, "Birth date", 13);
         this.nationality = CommonValidation.required(nationality, "Nationality");
         this.gamerTag = CommonValidation.requiredText(gamerTag, "Gamer tag", 3);
         this.active = true;
@@ -72,12 +71,4 @@ public class Driver extends BaseEntity {
     public Integer getAge(Clock clock) {
         return Period.between(this.birthDate, LocalDate.now(clock)).getYears();
     }
-
-
-    private void validateBirthDate(Clock clock) {
-        if (birthDate.isAfter(LocalDate.now(clock))) {
-            throw new BusinessRuleException("Birth date cannot be in the future.");
-        }
-    }
-
 }

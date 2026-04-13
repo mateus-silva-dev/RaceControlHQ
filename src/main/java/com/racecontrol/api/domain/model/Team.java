@@ -1,7 +1,8 @@
 package com.racecontrol.api.domain.model;
 
-import com.racecontrol.api.domain.model.valueObject.HexColor;
+import com.racecontrol.api.domain.valueObject.HexColor;
 import com.racecontrol.api.domain.validation.CommonValidation;
+import com.racecontrol.api.domain.validation.UrlValidation;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -38,7 +39,7 @@ public class Team extends BaseEntity {
     public Team(String name, HexColor hexColor, String car_manufacturer) {
         this.name = CommonValidation.requiredText(name, "Team name", 3);
         this.hexColor = hexColor;
-        this.car_manufacturer = CommonValidation.requiredText(car_manufacturer, "Car manufacturer", 3);
+        this.car_manufacturer = CommonValidation.requiredText(car_manufacturer, "Car manufacturer", 2);
         this.active = true;
     }
 
@@ -61,14 +62,15 @@ public class Team extends BaseEntity {
     }
 
     public void updateCarManufacturer(String newCarManufacturer) {
-        String car_manufacturer = CommonValidation.requiredText(newCarManufacturer, "Car manufacturer", 3);
+        String car_manufacturer = CommonValidation.requiredText(newCarManufacturer, "Car manufacturer", 2);
         updateField(car_manufacturer, this.car_manufacturer, value -> {
             this.car_manufacturer = value;
         });
     }
 
     public void updateLogoUrl(String newLogoUrl) {
-        updateField(newLogoUrl, this.logo_url, value -> {
+        String logo_url = UrlValidation.validateUrl(newLogoUrl, "LogoTeamUrl");
+        updateField(logo_url, this.logo_url, value -> {
             this.logo_url = value;
         });
     }

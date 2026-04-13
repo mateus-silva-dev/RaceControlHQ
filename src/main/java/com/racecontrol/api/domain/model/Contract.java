@@ -9,6 +9,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity
@@ -17,8 +18,8 @@ import java.util.UUID;
 })
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@EqualsAndHashCode(callSuper = false, of = "id")
-public class Contract extends BaseEntity {
+@EqualsAndHashCode(of = "id")
+public class Contract {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -56,7 +57,7 @@ public class Contract extends BaseEntity {
 
 
     public boolean isFromSeason(UUID seasonId) {
-        return this.season.getId().equals(seasonId);
+        return Objects.equals(this.season.getId(), seasonId);
     }
 
     public void promoteToPrimary() {

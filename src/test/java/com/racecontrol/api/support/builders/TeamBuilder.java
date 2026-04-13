@@ -1,7 +1,7 @@
 package com.racecontrol.api.support.builders;
 
 import com.racecontrol.api.domain.model.Team;
-import com.racecontrol.api.domain.model.valueObject.HexColor;
+import com.racecontrol.api.domain.valueObject.HexColor;
 
 import java.util.UUID;
 

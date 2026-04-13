@@ -39,6 +39,6 @@ public class HexColor {
     }
 
     private boolean isValid(String value) {
-        return value != null && value.matches("^#([A-F0-9]{6}|[A-F0-9]{3})$");
+        return value.matches("^#([A-F0-9]{6}|[A-F0-9]{3})$");
     }
 }

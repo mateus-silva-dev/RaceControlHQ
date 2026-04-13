@@ -10,37 +10,43 @@ public class UrlValidation {
             throw new BusinessRuleException(field + " cannot be empty.", Code.EMPTY_FIELD);
         }
 
-        String normalized = normalize(value);
+        String url = value.trim();
 
-        if (isClearlyInvalid(normalized)) {
+         if (isClearlyInvalid(url)) {
             throw new BusinessRuleException(
                     "The URL for " + field + " is invalid.",
                     Code.INVALID_URL
             );
         }
 
-        String lower = normalized.toLowerCase();
-
-        if (lower.startsWith("http://")) {
-            normalized = "https://" + normalized.substring(7);
-        } else if (lower.startsWith("https://")) {
-            normalized = "https://" + normalized.substring(8);
+        String lower = url.toLowerCase();
+        if (!lower.startsWith("http")) {
+            url = "https://" + url.toLowerCase();
         } else {
-            normalized = "https://" + normalized;
+            int protocolEnd = url.indexOf("://") + 3;
+            int firstSlash = url.indexOf("/", protocolEnd);
+
+            if (firstSlash == -1) {
+                url = url.toLowerCase();
+            } else {
+                String protocolAndDomain = url.substring(0, firstSlash).toLowerCase();
+                String path = url.substring(firstSlash);
+                url = protocolAndDomain + path;
+            }
         }
 
-        if (!isValidUrl(normalized)) {
+        if (url.startsWith("http://")) {
+            url = "https://" + url.substring(7);
+        }
+
+        if (!isValidUrl(url)) {
             throw new BusinessRuleException(
                     "The URL for " + field + " is invalid.",
                     Code.INVALID_URL
             );
         }
 
-        return normalized;
-    }
-
-    private static String normalize(String value) {
-        return value.trim();
+        return url;
     }
 
     private static boolean isClearlyInvalid(String value) {
@@ -55,4 +61,5 @@ public class UrlValidation {
             return false;
         }
     }
+
 }

@@ -59,7 +59,14 @@ public class SeasonBuilder {
     }
 
     public Season build() {
-        return Season.create(title, startDate, endDate, league, clock);
+        Season season = Season.create(title, startDate, endDate, league, clock);
+
+        if (this.status == SeasonStatus.FINISHED) {
+            season.updateStatus(SeasonStatus.IN_PROGRESS);
+            season.updateStatus(SeasonStatus.FINISHED);
+        }
+
+        return season;
     }
 
 }

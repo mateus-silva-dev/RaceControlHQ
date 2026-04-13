@@ -9,6 +9,7 @@ import java.util.function.Supplier;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 public interface DomainAssertions {
 
@@ -17,11 +18,8 @@ public interface DomainAssertions {
     }
 
     default <T> void assertUpdateWorkflow(Consumer<T> updateMethod, Supplier<T> getterMethod, T newValue, T expectedValue) {
-        updateMethod.accept(newValue);
-        assertThat(getterMethod.get()).isEqualTo(expectedValue);
-
-        updateMethod.accept(newValue);
-        assertThat(getterMethod.get()).isEqualTo(expectedValue);
+        assertIdempotent(() -> updateMethod.accept(newValue), getterMethod);
+        assertEquals(expectedValue, getterMethod.get());
     }
 
     default void assertNoChange(Runnable action, Supplier<?>... getters) {
@@ -33,11 +31,6 @@ public interface DomainAssertions {
                 .containsExactly(before);
     }
 
-    /**
-     * ✔ Valida:
-     * - Pode alterar na primeira execução
-     * - Não altera na segunda (idempotência)
-     */
     default void assertIdempotent(Runnable action, Supplier<?>... getters) {
         action.run();
         Object[] afterFirst = captureState(getters);

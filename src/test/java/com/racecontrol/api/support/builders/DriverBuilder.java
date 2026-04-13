@@ -1,7 +1,7 @@
 package com.racecontrol.api.support.builders;
 
 import com.racecontrol.api.domain.model.Driver;
-import com.racecontrol.api.domain.model.valueObject.Nationality;
+import com.racecontrol.api.domain.valueObject.Nationality;
 
 import java.time.Clock;
 import java.time.LocalDate;

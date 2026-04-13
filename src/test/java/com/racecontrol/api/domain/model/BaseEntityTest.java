@@ -1,4 +1,4 @@
-package com.racecontrol.api.model;
+package com.racecontrol.api.domain.model;
 
 import com.racecontrol.api.support.assertions.DomainAssertions;
 import org.junit.jupiter.api.BeforeEach;
